@@ -30,7 +30,7 @@ public class JwtUtil {
     }
 
     private String generateToken(Map<String, Object> extractClaims, UserDetails userDetails) {
-        // Set expiration time to 1 minute (60 seconds)
+        // Set expiration time to 1 hour.
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.HOUR, 1); // Add 1 hour to the current time
 

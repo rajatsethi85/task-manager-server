@@ -1,5 +1,6 @@
 package com.project.task_manager.services.admin;
 
+import com.project.task_manager.dto.PagedResponseDto;
 import com.project.task_manager.dto.TaskDto;
 import com.project.task_manager.dto.UserDto;
 
@@ -13,7 +14,7 @@ public interface AdminService {
 
     TaskDto createTask(TaskDto taskDto);
 
-    List<TaskDto> getAllTasks();
+    PagedResponseDto getAllTasks(int pageNumber, int pageSize);
 
     void deleteTask(Long id);
 

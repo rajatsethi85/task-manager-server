@@ -1,5 +1,6 @@
 package com.project.task_manager.controller.admin;
 
+import com.project.task_manager.dto.PagedResponseDto;
 import com.project.task_manager.dto.TaskDto;
 import com.project.task_manager.dto.UserDto;
 import com.project.task_manager.services.admin.AdminService;
@@ -50,13 +51,16 @@ public class AdminController {
     }
 
     /**
-     * Get all tasks for admin user.
-     * @return List<TaskDto>.
+     * Get all Tasks for admin based on pagination.
+     * @param pageNumber page number
+     * @param  pageSize page size
+     * @return PagesResponseDto.
      */
     @GetMapping("/tasks")
-    public ResponseEntity<List<TaskDto>> getAllTasks() {
-        List<TaskDto> tasks = adminService.getAllTasks();
-        if (tasks.isEmpty()) {
+    public ResponseEntity<PagedResponseDto> getAllTasks(@RequestParam(defaultValue = "0", required = false) int pageNumber,
+                                                        @RequestParam(defaultValue = "6", required = false) int pageSize) {
+        PagedResponseDto tasks = adminService.getAllTasks(pageNumber, pageSize);
+        if (tasks.getTotalElements() == 0) {
             throw new DataNotFoundException("No Tasks found");
         }
         return ResponseEntity.ok(tasks);

@@ -1,5 +1,6 @@
 package com.project.task_manager.services.admin;
 
+import com.project.task_manager.dto.PagedResponseDto;
 import com.project.task_manager.dto.TaskDto;
 import com.project.task_manager.dto.UserDto;
 import com.project.task_manager.entities.Task;
@@ -11,6 +12,9 @@ import com.project.task_manager.utils.exceptionUtil.GlobalExceptionHandler;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -57,12 +61,17 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public List<TaskDto> getAllTasks() {
+    public PagedResponseDto getAllTasks(int pageNumber, int pageSize) {
         logger.info("Fetching all tasks");
-        return taskRepository.findAll()
-                .stream().sorted(Comparator.comparing(Task::getDueDate).reversed())
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<?> page = taskRepository.findAll(pageable);
+        int totalPages = page.getTotalPages();
+        long totalElements = page.getTotalElements();
+        List<Task> taskList = (List<Task>) page.getContent();
+        List<TaskDto> taskDtoList = taskList.stream().sorted(Comparator.comparing(Task::getDueDate).reversed())
                 .map(Task::getTaskDto)
-                .collect(Collectors.toList());
+                .toList();
+        return new PagedResponseDto(totalElements, totalPages, taskDtoList);
     }
 
     @Override
